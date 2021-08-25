@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import csv
 from time import sleep
 from urllib.request import urlopen
 from funcs import *
@@ -17,30 +16,35 @@ checkpoint = []
 CHECKPOINT , PAGE = skip(URL , CHECKPOINT)
 # print(CHECKPOINT)
 
+x = 0
+
 while True:
-  # sleep(0.05)
-  try:
-      print(CHECKPOINT)
-      FullURL = URL + str(CHECKPOINT)
-      # print(FullURL)
-      PAGE = urlopen(FullURL)
-      soup = BeautifulSoup(PAGE, "html.parser")
-      td = soup.find_all("td")
-      td = [i.text.strip().replace("," , ":") for i in td]
-      data.append(td)
-      checkpoint.append(CHECKPOINT)
-      CHECKPOINT += 1
-  except KeyboardInterrupt:
+# sleep(0.05)
+    x += 1
+    if x == 10:
+        x = 0
+        writeToFile(data , CHECKPOINT)
+        data = []
+        print("50 done")
+    try:
+        print(CHECKPOINT)
+        FullURL = URL + str(CHECKPOINT)
+        # print(FullURL)
+        PAGE = urlopen(FullURL)
+        soup = BeautifulSoup(PAGE, "html.parser")
+        td = soup.find_all("td")
+        td = [i.text.strip().replace("," , ":") for i in td]
+        data.append(td)
+        checkpoint.append(CHECKPOINT)
+        CHECKPOINT += 1
+    except KeyboardInterrupt:
         print("Shutdown requested...exiting")
         break
-  except Exception as e:
-      print(e)
-      CHECKPOINT += 1
+    except Exception as e:
+        print(e)
+        if e.code == 404:
+            CHECKPOINT += 1
+        else:
+            break
 
-c = open("checkpoint.txt", "w")
-c.write(str(CHECKPOINT))
-
-f = open('1.csv', 'a')
-writer = csv.writer(f)
-for i in data:
-    writer.writerow(i)
+writeToFile(data , CHECKPOINT)
