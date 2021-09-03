@@ -12,6 +12,7 @@ def skip(URL , CHECKPOINT):
           PAGE = urlopen(FullURL)
           break
       except Exception as e:
+          print(CHECKPOINT)
           print(e)
           CHECKPOINT += 1
   return(CHECKPOINT , PAGE)

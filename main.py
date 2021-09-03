@@ -19,9 +19,9 @@ CHECKPOINT , PAGE = skip(URL , CHECKPOINT)
 x = 0
 
 while True:
-# sleep(0.05)
+    sleep(0.05)
     x += 1
-    if x == 10:
+    if x == 50:
         x = 0
         writeToFile(data , CHECKPOINT)
         data = []
@@ -34,6 +34,7 @@ while True:
         soup = BeautifulSoup(PAGE, "html.parser")
         td = soup.find_all("td")
         td = [i.text.strip().replace("," , ":") for i in td]
+        td.append(CHECKPOINT)
         data.append(td)
         checkpoint.append(CHECKPOINT)
         CHECKPOINT += 1
